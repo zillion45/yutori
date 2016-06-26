@@ -1,6 +1,5 @@
-from tornado.web import RequestHandler
+import tornado.web
 
-class BaseHandler(RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        pass
-
+        return self.get_secure_cookie('user')

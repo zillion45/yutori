@@ -7,13 +7,15 @@ import tornado.web
 from tornado.options import define, options
 import motor
 
+from handlers.base import BaseHandler
 from handlers.user import SignupHandler, LogoutHandler, LogoutHandler
 
 define("port", default=8000, help="run on the given port")
 
-class HomeHandler(tornado.web.RequestHandler):
+class HomeHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
-        self.render('home.html')
+        self.render('home.html', user=self.current_user)
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -27,7 +29,8 @@ class Application(tornado.web.Application):
             'template_path': os.path.join(os.path.dirname(__file__), 'tpl'),
             'static_path': os.path.join(os.path.dirname(__file__), 'static'),
             'site_title': u"yutori",
-            'debug': True,
+            'xsrf_cookies': True,
+            'debug': True
         }
         tornado.web.Application.__init__(self, handlers, **settings)
 
